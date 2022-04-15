@@ -1,11 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using ProductManager;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProductManager
 {
@@ -16,7 +12,8 @@ namespace ProductManager
         [TestCase(2021, ExpectedResult = "1) Product 4 - 8 item(s)\r\n2) Product 5 - 2 item(s)")]
         public string ShouldProductStatisticsReturnReportOnYear(int year)
         {
-            Store store = new Store() {
+            Store store = new Store()
+            {
                 Orders = TestDataFixture.GetOrderList,
                 Products = TestDataFixture.GetProductList
             };
@@ -27,14 +24,15 @@ namespace ProductManager
         [Test]
         public void ShouldStoreGetYearsStatistics()
         {
-            Store store = new Store() {
+            Store store = new Store()
+            {
                 Orders = TestDataFixture.GetOrderList,
                 Products = TestDataFixture.GetProductList
             };
-            
+
             store.GetYearsStatistics()
                 .Should()
-                .Be("2021 - 630.000 руб.\r\nMost selling: Product 1 (380 item(s))\r\n\r\n2020 - 630.000 руб.\r\nMost selling: Product 1 (380 item(s))");
+                .Be("2021 - 802 руб.\r\nMost selling: Product 4 (8 item(s))\r\n\r\n2020 - 16000 руб.\r\nMost selling: Product 1 (3 item(s))");
         }
     }
 

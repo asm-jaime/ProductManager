@@ -72,8 +72,44 @@ namespace ProductManager
 
             // TODO Реализовать логику получения и формирования требуемых данных
 
-            return "";
+            var products = Products.ToDictionary(product => product.Id, product => product);
+
+            return
+                (from product in (
+                    from order in Orders
+                    from item in order.Items
+                    select new
+                    {
+                        Year = order.OrderDate.Year,
+                        Name = products[item.ProductId].Name,
+                        Quantity = item.Quantity,
+                        PositionPrice = item.Quantity * products[item.ProductId].Price
+                    }
+                    )
+                 orderby product.Year descending
+                 group product by product.Year into productGroup
+                 select new
+                 {
+                     Year = productGroup.Key,
+                     TotalMoney = (from groupedProduct in productGroup select groupedProduct.PositionPrice).Sum(),
+                     TopProduct = (
+                         from productQuantity in (
+                             from groupedProduct in productGroup
+                             select new { Name = groupedProduct.Name, Quantity = groupedProduct.Quantity }
+                         )
+                         group productQuantity by productQuantity.Name into productQuantityGroup
+                         select new
+                         {
+                             Name = productQuantityGroup.Key,
+                             TotalQuantity = (from productQuantityGroupItem in productQuantityGroup select productQuantityGroupItem.Quantity).Sum(),
+                         }
+                     ).OrderBy(element => element.TotalQuantity).LastOrDefault()
+                 }
+                )
+                .Select(salesNote => $"{salesNote.Year} - {salesNote.TotalMoney} руб.\r\nMost selling: {salesNote.TopProduct.Name} ({salesNote.TopProduct.TotalQuantity} item(s))")
+                .Aggregate((noteA, noteB) => $"{noteA}\r\n\r\n{noteB}");
         }
+
     }
 
 }
