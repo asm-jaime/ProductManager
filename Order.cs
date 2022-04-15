@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProductManager
 {
@@ -18,11 +15,5 @@ namespace ProductManager
             public int Quantity { get; set; }
         }
 
-    }
-
-    public static class OrderOperations
-    {
-        public static double GetPrice (this Order order, Dictionary<int, double> prices)
-            => order.Items.Select(item => item.Quantity * prices[item.ProductId]).Sum();
     }
 }
